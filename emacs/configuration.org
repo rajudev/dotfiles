@@ -1,0 +1,678 @@
+#+TITLE: @rajudev 's Emacs Configuration in an Org mode file
+#+STARTUP: overview
+
+
+
+* My Information
+  
+  #+BEGIN_SRC emacs-lisp
+  ;; All the relevant and personal information that Emacs needs.
+  ;; If you are going to use it, needless to say to use your own information.
+  (setq user-full-name "Raju Devidas"
+        user-email-address "mail at raju dot dev"
+	calendar-location-name "New Delhi, India")  
+  #+END_SRC
+
+
+
+* General Settings
+** Dont show the startup message
+   #+BEGIN_SRC emacs-lisp
+   (setq inhibit-startup-message t)
+   #+END_SRC
+
+** Disable the toolbar
+   #+BEGIN_SRC emacs-lisp
+   (tool-bar-mode -1)
+   #+END_SRC
+
+** Disable the menu bar
+   #+BEGIN_SRC emacs-lisp
+   (menu-bar-mode 1)
+   #+END_SRC
+
+** Disable the scroll bar
+   #+BEGIN_SRC emacs-lisp
+   (scroll-bar-mode -1)
+   #+END_SRC
+
+** Enable line numbers (Buggy)
+   #+BEGIN_SRC emacs-lisp
+   ;;(setq display-line-numbers-mode 1)
+   ;;(setq linum-mode 1)
+   (global-display-line-numbers-mode t)
+   #+END_SRC
+
+** Highlight the current line
+   #+BEGIN_SRC emacs-lisp
+   (global-hl-line-mode +1)
+   #+END_SRC
+** Display cursor position column in modeline
+   #+BEGIN_SRC emacs-lisp
+   (column-number-mode t)
+   
+   #+END_SRC
+
+** Delete selection when we start typing after selecting region
+   #+BEGIN_SRC emacs-lisp
+   (delete-selection-mode 1)
+   #+END_SRC
+
+** Set a different backup directory, instead of the current directory
+   #+BEGIN_SRC emacs-lisp
+   (setq backup-directory-alist '(("." . "~/.emacs-backup-files"))
+         backup-by-copying t
+         version-control t
+         delete-old-versions t
+         kept-new-versions 50
+         kept-old-versions 5)
+   #+END_SRC
+
+** Highlight matching parenthesis
+   #+BEGIN_SRC emacs-lisp
+   ;;turn on highlight matching brackets when cursor is on one
+   (show-paren-mode 1)
+
+   ;; highlight brackets if visible, else entire expression
+   ;; (setq show-paren-style ')
+   #+END_SRC
+
+** Insert matching parenthesis aka electric-pair-mode
+   #+BEGIN_SRC emacs-lisp
+     ;; auto close bracket insertion.
+     (electric-pair-mode 0)
+   #+END_SRC
+
+** Set indentation to always use space
+   #+BEGIN_SRC emacs-lisp
+     ;; make indentation commands use space only (never tab character)
+     (setq-default indent-tabs-mode nil)
+     ;; emacs 23.1 to 26, default to t
+      ;; if indent-tabs-mode is t, it means it may use tab, resulting mixed space and tab
+   #+END_SRC
+   
+** Set default tab display width
+   #+BEGIN_SRC emacs-lisp
+   ;; set default tab char's display width to 4 spaces
+   (setq-default tab-width 4) ; emacs 23.1 to 26 default to 8
+   #+END_SRC
+** Save Cursor position for each file
+   #+BEGIN_SRC emacs-lisp
+     ;; remember cursor position, for emacs 25.1 or later
+     (save-place-mode 1)
+   #+END_SRC
+
+** Disable yes-or-no messages
+   For some reason, there are different types of confirmation prompts in Emacs.
+   One of them forces you to write “yes” and the other one only to press “y”,
+   so I disable the first type.
+   #+BEGIN_SRC emacs-lisp
+   (fset 'yes-or-no-p 'y-or-n-p)   
+   #+END_SRC
+   
+* UI
+
+** Theme
+   #+BEGIN_SRC emacs-lisp
+   ;; list of doom-themes is here https://github.com/hlissner/emacs-doom-themes
+   (use-package doom-themes
+     :ensure t
+     :config
+     (load-theme 'doom-dracula t))
+   ;;(load-theme 'dracula t)
+   #+END_SRC
+
+** Doom Modeline
+   #+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+	  :ensure t
+	  :hook (after-init . doom-modeline-mode)
+	  :config
+	    ;; How tall the mode-line should be. It's only respected in GUI.
+	    ;; If the actual char height is larger, it respects the actual height.
+	    (setq doom-modeline-height 35)
+
+	    ;; specify font family in modeline
+
+	    (set-face-attribute 'mode-line nil :family "Cascadia Code" :height 100)
+	    (set-face-attribute 'mode-line-inactive nil :family "Cascadia Code" :height 100)
+
+
+	    ;; How wide the mode-line bar should be. It's only respected in GUI.
+	    (setq doom-modeline-bar-width 5)
+
+	    ;; Whether display icons in the mode-line. Respects `all-the-icons-color-icons'.
+	    ;; While using the server mode in GUI, should set the value explicitly.
+	    (setq doom-modeline-icon (display-graphic-p))
+
+	    ;; Whether display the icon for `major-mode'. Respects `doom-modeline-icon'.
+	    (setq doom-modeline-major-mode-icon t)
+
+	    ;; Whether display the colorful icon for `major-mode'.
+	    ;; Respects `doom-modeline-major-mode-icon'.
+	    (setq doom-modeline-major-mode-color-icon t)
+
+	    ;; Whether display the icon for the buffer state. It respects `doom-modeline-icon'.
+	    (setq doom-modeline-buffer-state-icon t)
+
+	    ;; Whether display the modification icon for the buffer.
+	    ;; Respects `doom-modeline-icon' and `doom-modeline-buffer-state-icon'.
+	    (setq doom-modeline-buffer-modification-icon t)
+
+	    ;; Whether to use unicode as a fallback (instead of ASCII) when not using icons.
+	    (setq doom-modeline-unicode-fallback nil)
+
+	    ;; Whether display the minor modes in the mode-line.
+	    (setq doom-modeline-minor-modes t)
+
+	    ;; If non-nil, a word count will be added to the selection-info modeline segment.
+	    (setq doom-modeline-enable-word-count t)
+
+	    ;; Whether display the buffer encoding.
+	    ;; (setq doom-modeline-buffer-encoding t)
+
+	    ;; Whether display the indentation information.
+	    ;; (setq doom-modeline-indent-info t)
+
+	    ;; If non-nil, only display one number for checker information if applicable.
+	    ;; (setq doom-modeline-checker-simple-format t)
+
+	    ;; The maximum number displayed for notifications.
+	    (setq doom-modeline-number-limit 99)
+
+	    ;; The maximum displayed length of the branch name of version control.
+	    (setq doom-modeline-vcs-max-length 30)
+
+	    ;; Whether display the `lsp' state. Non-nil to display in the mode-line.
+	    ;; (setq doom-modeline-lsp t)
+
+	    ;; Whether display the GitHub notifications. It requires `ghub' package.
+	    ;; (setq doom-modeline-github nil)
+
+	    ;; The interval of checking GitHub.
+	    ;; (setq doom-modeline-github-interval (* 30 60))
+
+	    ;; Whether display the modal state icon.
+	    ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys', etc.
+	    ;; (setq doom-modeline-modal-icon t)
+
+	    ;; Whether display the mu4e notifications. It requires `mu4e-alert' package.
+	    ;;(setq doom-modeline-mu4e nil)
+
+	    ;; Whether display the gnus notifications.
+	    ;;(setq doom-modeline-gnus t)
+
+	    ;; Wheter gnus should automatically be updated and how often (set to nil to disable)
+	    ;;(setq doom-modeline-gnus-timer 2)
+
+	    ;; Whether display the IRC notifications. It requires `circe' or `erc' package.
+	    ;; (setq doom-modeline-irc t)
+
+
+	    ;; Function to stylize the irc buffer names.
+	    ;; (setq doom-modeline-irc-stylize 'identity)
+
+	    ;; Whether display the environment version.
+	    ;; (setq doom-modeline-env-version t))
+
+	    ;; Or for individual languages
+	    ;; (setq doom-modeline-env-enable-python t)
+	    ;; (setq doom-modeline-env-enable-ruby t)
+	    ;; (setq doom-modeline-env-enable-perl t)
+	    ;; (setq doom-modeline-env-enable-go t)
+	    ;; (setq doom-modeline-env-enable-elixir t)
+	    ;; (setq doom-modeline-env-enable-rust t)
+
+	    ;; ;; Change the executables to use for the language version string
+	    ;; (setq doom-modeline-env-python-executable "python") ; or `python-shell-interpreter'
+	    ;; (setq doom-modeline-env-ruby-executable "ruby")
+	    ;; (setq doom-modeline-env-perl-executable "perl")
+	    ;; (setq doom-modeline-env-go-executable "go")
+	    ;; (setq doom-modeline-env-elixir-executable "iex")
+	    ;; (setq doom-modeline-env-rust-executable "rustc")
+
+	    ;; What to dispaly as the version while a new one is being loaded
+	    ;;(setq doom-modeline-env-load-string "...")
+	)
+   #+END_SRC
+
+** All the Icons
+   You should be able to install this package in the standard way, 
+   add it to the load path and then calling
+   #+BEGIN_SRC emacs-lisp
+   (use-package all-the-icons
+     :ensure t)
+   #+END_SRC
+   In order for the icons to work it is very important that you install
+   the Resource Fonts included in this package, they are available in
+   the fonts directory. You can also install the latest fonts for this 
+   package in the (guessed?) based on the OS by calling the following function;
+   
+   M-x all-the-icons-install-fonts
+   
+   Bear in mind, this will also run fc-cache -f -v on MacOS and Linux which
+   can take some time to complete. For Windows, this function will prompt 
+   for a download directory for you to install them manually.
+
+** Dired Hacks (Currently Buggy)
+   #+BEGIN_SRC emacs-lisp
+   ;;(use-package dired-subtree
+   ;;  :config
+   ;;    (bind-keys:map dired-mode-map
+   ;;      ("e" . dired-subtree-insert)
+   ;;	 ("c" . dired-subtree-remove)))
+   #+END_SRC
+
+** Move Buffers around
+   If we want to swap buffers location in frames, there’s no fast way to do it
+   in Emacs by default. To do it, a good option that I found is to use 
+   buffer-move package, and use these key bindings.
+   #+BEGIN_SRC emacs-lisp
+   (use-package buffer-move
+     :ensure t
+     :bind (("C-c w <up>"    . buf-move-up)
+           ("C-c w <down>"  . buf-move-down)
+           ("C-c w <left>"  . buf-move-left)
+           ("C-c w <right>" . buf-move-right)))   
+   #+END_SRC
+** Display the current time
+   #+BEGIN_SRC emacs-lisp
+    (display-time-mode t)
+   #+END_SRC
+
+* Modes
+** Helm Mode
+   #+BEGIN_SRC emacs-lisp
+   ;; Helm framework
+   ;; (use-package helm
+   ;;   :ensure t
+   ;;   :config (helm-mode t))
+   #+END_SRC
+
+** IDO
+   #+BEGIN_SRC emacs-lisp
+   ;; I-do framework
+   (setq ido-everywhere t)
+   (setq ido-enable-flex-matching t)
+   ;;(setq max-mini-window-height 10)
+   (ido-mode t)
+   #+END_SRC
+
+** Org Mode
+*** Using latest org mode from git
+    Refering https://www.gnu.org/software/emacs/manual/html_node/org/Installation.html#Installation
+    #+BEGIN_SRC emacs-lisp
+         (add-to-list 'load-path "/home/rajudev/dev/code.orgmode.org/org-mode/lisp" t)
+    #+END_SRC
+
+*** Activating Org mode and Some Keybindings for Org Mode
+    Referring https://orgmode.org/worg/org-tutorials/orgtutorial_dto.html
+    #+BEGIN_SRC emacs-lisp
+      (require 'org)
+      ;;(define-key global-map "\C-cl" 'org-store-link)
+      ;;(define-key global-map "\C-ca" 'org-agenda)
+      (global-set-key (kbd "C-c l") 'org-store-link)
+      (global-set-key (kbd "C-c a") 'org-agenda)
+      (global-set-key (kbd "C-c c") 'org-capture)
+      (setq org-log-done t)
+    #+END_SRC
+
+*** Setting up org-agenda-files
+    #+BEGIN_SRC emacs-lisp
+    (setq org-agenda-files (list "~/.emacs.d/org-files/debian-contributions.org"
+                                 "~/.emacs.d/org-files/scratchpad.org"
+                                 "~/.emacs.d/org-files/life.org"))
+    
+    #+END_SRC
+
+*** Org mode bullets
+    #+BEGIN_SRC emacs-lisp
+    (use-package org-bullets
+      :ensure t
+      :config
+	(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+    #+END_SRC
+*** Enable text selection with Shift key in Org mode files
+    #+BEGIN_SRC emacs-lisp
+    (setq org-support-shift-select 1)
+    #+END_SRC
+*** Emacs-srcum, gnuplot, uml-mode
+    #+BEGIN_SRC emacs-lisp
+    (use-package org-scrum
+      :ensure t)
+
+    (use-package gnuplot
+      :ensure t)
+
+    (use-package uml-mode
+      :ensure t)
+    #+END_SRC
+
+
+*** Save images from clipboard in org file
+    #+BEGIN_SRC emacs-lisp
+    (defun my-org-screenshot ()
+  "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+  (interactive)
+  (setq filename
+        (concat
+         (make-temp-name
+          (concat (buffer-file-name)
+                  "_"
+                  (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+  (call-process "import" nil nil nil filename)
+  (insert (concat "[[" filename "]]"))
+  (org-display-inline-images))
+    #+END_SRC
+    
+*** create slides with Emacs Org mode and Reveal.js
+    https://opensource.com/article/18/2/how-create-slides-emacs-org-mode-and-revealjs
+     #+BEGIN_SRC emacs-lisp
+     ;; Reveal.js + Org mode
+     (require 'ox-reveal)
+     (setq Org-Reveal-root "file:///home/rajudev/.emacs.d/reveal.js-4.0.2/js/reveal.js")
+     (setq Org-Reveal-title-slide nil)
+     #+END_SRC
+
+* General Packages
+** which-key
+   #+BEGIN_SRC emacs-lisp
+   (use-package which-key
+     :ensure t
+     :config (which-key-mode))
+   #+END_SRC
+
+** Projectile
+   #+BEGIN_SRC emacs-lisp
+   ;; Projectile - Easy operations/interactions  within a project folder https://github.com/bbatsov/projectile
+   (use-package projectile
+     :ensure t
+     :config
+     (define-key projectile-mode-map (kbd "C-x p") ' projectile-command-map)
+     (projectile-mode +1))
+   #+END_SRC
+
+** Emacs Dashboard
+   #+BEGIN_SRC emacs-lisp
+   ;; Emacs dashboard
+   (use-package dashboard
+     :ensure t
+     :init
+     (progn
+       (setq dashboard-items '((recents . 5)
+       			       (projects . 5)
+			       (bookmarks . 5)
+			       (agenda . 5)))
+       ;;(setq dashboard-show-shortcuts nil)
+       ;;(setq dashboard-center-content nil)
+       ;;(setq dashboard-set-file-icons t)
+       ;;(setq dashboard-set-heading-icons t)
+       ;;(setq dashboard-startup-banner "~/.emacs.d/dashboard-images/utkarsh2102.png")
+       ;;(setq dashboard-startup-banner 'official)
+       ;; Set the title
+       ;; (setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
+       ;; Set the banner
+       (setq dashboard-startup-banner 4)
+       ;; Value can be
+       ;; 'official which displays the official emacs logo
+       ;; 'logo which displays an alternative emacs logo
+       ;; 1, 2 or 3 which displays one of the text banners
+       ;; "path/to/your/image.png" which displays whatever image you would prefer
+       ;; Content is not centered by default. To center, set
+       (setq dashboard-center-content nil)
+       ;; To disable shortcut "jump" indicators for each section, set
+       (setq dashboard-show-shortcuts t)
+       (setq dashboar-set-navigator t))
+     :config
+     (dashboard-setup-startup-hook))
+  #+END_SRC
+
+** Treemacs
+   #+BEGIN_SRC emacs-lisp
+   ;; Finally Treemacs
+   (use-package treemacs
+     :ensure t
+     :bind
+     (:map global-map
+	   ([f8] . treemacs))
+     :config
+     (setq treemacs-is-never-other-window t))
+  #+END_SRC
+** Treemacs Projectile
+   #+BEGIN_SRC emacs-lisp
+   (use-package treemacs-projectile
+     :after treemacs projectile
+     :ensure t)
+   #+END_SRC
+
+** Expand Region
+   Emacs extension to increase selected region by semantic units.
+   #+BEGIN_SRC emacs-lisp
+   (use-package expand-region
+     :ensure t
+     :bind
+       ("C-=" . er/expand-region)
+       ("C--" . er/contract-region))
+   #+END_SRC
+** Centaur Tabs
+   #+BEGIN_SRC emacs-lisp
+   (use-package centaur-tabs
+     ;;:ensure t
+     :demand
+     :config
+     (centaur-tabs-mode t)
+     (setq centaur-tabs-style "wave"
+           centaur-tabs-set-bar 'over
+	   centaur-tabs-set-icons t
+	   centaur-tabs-gray-out-icons 'buffer
+	   centaur-tabs-height 24
+	   centaur-tabs-set-modifier-marker t
+	   centaur-tabs-show-navigation-buttons t
+	   x-underline-at-descent-line t
+	   centaur-tabs-modifier-marker "*")
+     (centaur-tabs-change-fonts "Cascadia Code" 130)
+     :bind
+     ("C-<prior>" . centaur-tabs-backward)
+     ("C-<next>" . centaur-tabs-forward))
+   #+END_SRC
+** Company Mode
+   Company is a text completion framework for Emacs.
+   #+BEGIN_SRC emacs-lisp
+     (use-package company
+       :ensure t
+       :init
+       (add-hook 'after-init-hook 'global-company-mode))
+   #+END_SRC
+
+* Custom Scripted tweaks
+** Named terminal
+   #+BEGIN_SRC emacs-lisp
+   (load-file "~/.emacs.d/named-term.el")
+   (global-set-key (kbd "C-x t") 'named-term)
+   #+END_SRC
+** Multiple Cursors
+   #+BEGIN_SRC emacs-lisp
+   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   ;; multiple cursors                                                       ;;
+   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   (global-set-key (kbd "C-c m c") 'mc/edit-lines)
+   #+END_SRC
+* Programming Language specific customizations
+** Javascript/ECMAScript and Typescript
+*** RJSX mode
+    #+BEGIN_SRC emacs-lisp
+    ;;(use-package rjsx-mode
+    ;;  :ensure t
+    ;;  :mode "\\.js\\")
+    #+END_SRC
+
+*** Tide
+    #+BEGIN_SRC emacs-lisp
+      (defun setup-tide-mode()
+	"Setup function for tide"
+	(interactive)
+	(tide-setup)
+	(flycheck-mode +1)
+	(setq flycheck-check-syntax-automatically '(save mode-enabled))
+	(tide-hl-identifier-mode +1)
+	(company-mode +1))
+
+      (use-package tide
+	:ensure t
+	:after (rjsx-mode company flycheck)
+	:hook (rjsx-mode . setup-tide-mode))
+    #+END_SRC
+
+*** Prettier
+    For this to work make sure that you have prettier installed on the host system
+    ~ ❯❯❯ npm install -g prettier
+    #+BEGIN_SRC emacs-lisp
+      (use-package prettier-js
+	:ensure t
+	:after (rjsx-mode)
+	:hook (rjsx-mode . prettier-js))
+    #+END_SRC
+
+* Utilities
+** Email
+*** Wanderlust
+     Refering https://github.com/wanderlust/wanderlust/blob/master/samples/en/dot.wl
+     #+BEGIN_SRC emacs-lisp
+     ;;  (autoload 'wl "wl" "Wanderlust" t)
+     ;;  (autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
+     ;;  (autoload 'wl-draft "wl-draft" "Write draft with wanderlust." t)
+     #+END_SRC
+
+*** GNUs
+     #+BEGIN_SRC emacs-lisp
+       ;; (setq user-mail-address "rajudev@disroot.org"
+       ;;       user-full-name "rajudev"
+       ;;  send-mail-function (quote smtpmail-send-it)
+       ;;  smtpmail-default-smtp-server "disroot.org"
+       ;;  smtpmail-smtp-user "rajudev"
+       ;;  smtpmail-stream-type (quote ssl))
+       ;; (custom-set-variables '(smtpmail-smtp-service 465 t))
+     #+END_SRC
+*** mu4e
+    Reference https://github.com/munen/emacs.d
+**** Installation
+     MU works on a local Maildir folder. For synchronization offlineimap is used. Install:
+     - Debian: =apt install offlineimap=
+     
+     For MU4E to work, install MU and MU4E:
+     - Debian: =apt install mu4e=
+
+     For starttls to work when sending mail, install gnutls:
+     - Debian: =apt install gnutls-bin=
+
+**** General
+     -  Configure =.offlineimaprc= file for IMAP
+     -  Configure =.authinfo= file for SMTP
+     -  https://www.emacswiki.org/emacs/GnusAuthinfo
+
+**** Authentication
+     Tell Emacs where to find the encrypted =.authinfo= file.
+     #+BEGIN_SRC emacs-lisp
+     (setq auth-sources
+       '((:source "~/.authinfo.gpg")))
+     #+END_SRC
+
+**** PDFs
+     To open PDFs within Mu4e with Emacs, then there's one thing to
+     configure. Mu4e uses =xdg-open= to chose the app to open any mime type.
+     
+     Configure =xdg-open= to use Emacs in =.local/share/applications/mimeapps.list=:
+     #+BEGIN_EXAMPLE
+     xdg-mime default emacs.desktop application/pdf
+     #+END_EXAMPLE
+
+**** Configuration
+***** Accounts Setup
+     #+BEGIN_SRC emacs-lisp
+     (require 'mu4e)
+     (require 'org-mu4e)
+     (setq send-mail-function 'smtpmail-send-it)
+
+     "[mu4e] configuration has been removed as it contains too much of my details.
+     Contact me in person or look online for mu4e configurations
+     https://github.com/munen/emacs.d is a very good resource "
+
+
+
+
+** XMPP (Inactive / Buggy)
+   #+BEGIN_SRC emacs-lisp
+   (use-package jabber
+     :ensure t
+     :config
+      (setq 
+        special-display-regexps 
+	'(("jabber-chat" 
+	(width . 80)
+	(scroll-bar-width . 16)
+	(height . 15)
+	(tool-bar-lines . 0)
+	(menu-bar-lines 0)
+	(font . "-GURSoutline-Courier New-normal-r-normal-normal-11-82-96-96-c-70-iso8859-1")
+	(left . 80))))
+      (setq
+        jabber-history-enabled t
+	jabber-use-global-history nil
+	jabber-backlog-number 100
+	jabber-backlog-days 300))
+
+
+   #+END_SRC
+** eww
+   When entering eww, use cursors to scroll without changing point.
+   #+BEGIN_SRC emacs-lisp
+   (add-hook 'eww-mode-hook 'scroll-lock-mode)
+   #+END_SRC
+** Org-roam
+   Installed Org-roam following the guide here.
+   Installed from MELPA
+   https://www.orgroam.com/manual/Installing-from-MELPA.html#Installing-from-MELPA
+   
+*** pick a location to store the Org-roam files
+    #+BEGIN_SRC emacs-lisp
+      ;; (make-director "~/org-roam")
+      (setq org-roam-directory "~/cloud.disroot.org/org-roam")
+    #+END_SRC
+*** Starting Org-roam mode on startup
+     #+BEGIN_SRC emacs-lisp
+     (add-hook 'after-init-hook 'org-roam-mode)
+     #+END_SRC
+
+** ERC
+* Custom Hacks
+** Sudo Save
+   If the current buffer is not writable, ask if it should be saved with sudo.
+   Happily taken from Pascals configuration: https://github.com/SirPscl/emacs.d#sudo-save
+   #+BEGIN_SRC emacs-lisp
+   (defun ph/sudo-file-name (filename)
+     "Prepend '/sudo:root@`system-name`:' to FILENAME if appropriate.
+      This is, when it doesn't already have a sudo-prefix."
+      (if (not (or (string-prefix-p "/sudo:root@localhost:"
+                                    filename)
+                   (string-prefix-p (format "/sudo:root@%s:" system-name)
+                                    filename)))
+          (format "/sudo:root@%s:%s" system-name filename)
+          filename))
+
+  (defun ph/sudo-save-buffer ()
+    "Save FILENAME with sudo if the user approves."
+     (interactive)
+     (when buffer-file-name
+       (let ((file (ph/sudo-file-name buffer-file-name)))
+         (if (yes-or-no-p (format "Save file as %s ? " file))
+             (write-file file)))))
+
+   (advice-add 'save-buffer :around
+               '(lambda (fn &rest args)
+                  (when (or (not (buffer-file-name))
+                            (not (buffer-modified-p))
+                            (file-writable-p (buffer-file-name))
+                            (not (ph/sudo-save-buffer)))
+                  (call-interactively fn args))))
+   #+END_SRC

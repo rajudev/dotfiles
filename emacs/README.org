@@ -1,0 +1,5 @@
+This configuration is not a drop in replacement. 
+I have removed some parts which contained personal details. 
+It is made over time by taking bits and pieces from different configurations from around different places.
+
+Happy Hacking!!
